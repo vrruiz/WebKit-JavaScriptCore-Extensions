@@ -95,7 +95,7 @@ main (int argc, char* argv[])
     g_signal_connect (G_OBJECT (main_window), "destroy", G_CALLBACK (destroy), NULL);
     
     /* Open webpage */
-    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), "file:///home/rvr/Dropbox/devel/webkit/webkit-02.html");
+    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), "file://webkit-02.html");
 
     /* Create the main window */
     gtk_window_set_default_size (GTK_WINDOW (main_window), 800, 600);
