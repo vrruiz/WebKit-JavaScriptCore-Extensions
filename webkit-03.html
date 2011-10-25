@@ -1,0 +1,18 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h1>Extending JavaScript with WebKit. Notification class.</h1>
+  <script type="text/javascript">
+    function send_notification() {
+        var notification_text = document.getElementById("notification-text").value;
+        Notification.notify(notification_text);
+    }
+  </script>
+  <form id="form">
+    <div><textarea id="notification-text" rows="5" cols="40"></textarea></div>
+    <div><button type="button" onclick="send_notification();">Send notification</button></div>
+  </form>
+</body>
+</html>

@@ -5,8 +5,10 @@ Tutorial files to extend JavaScript functions using WebKit and JavaScriptCore.
 
 The tutorial is available at
 http://rvr.typepad.com/wind/2011/10/webkit-extending-javascript-1.html
+http://rvr.typepad.com/wind/2011/10/webkit-extending-javascript-2.html
 
 webkit-01.c - A simple GTK+ application which displays a web view.
 webkit-02.c - Extending JavaScript with an dumb class.
+webkit-03.c - Desktop notifications.
 
 (C) 2011 Víctor R. Ruiz <rvr@linotipo.es>
