@@ -15,6 +15,7 @@ static void battery_init_cb(JSContextRef ctx,
 {
     GError *error = NULL;
     
+    /* Connection to the system bus */ 
     conn = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
 
     if (conn == NULL)
@@ -35,11 +36,13 @@ static void battery_init_cb(JSContextRef ctx,
         return;
     }
 
+    /* Creates a proxy using an existing proxy as a template */
     properties_proxy = dbus_g_proxy_new_from_proxy (proxy,
                                                     "org.freedesktop.DBus.Properties",
                                                     dbus_g_proxy_get_path (proxy));
     if (properties_proxy == NULL)
     {
+        g_object_unref (proxy)
         g_printerr ("Failed to create proxy object\n");
         return;
     }
@@ -50,7 +53,7 @@ static void battery_init_cb(JSContextRef ctx,
 /* Class finalize */
 static void battery_destroy_cb(JSObjectRef object)
 {
-    /* Ends Battery */
+    /* Ends Battery. Free allocated memory. */
     if (proxy != NULL) g_object_unref (proxy);
     if (properties_proxy != NULL) g_object_unref (properties_proxy);
 }
@@ -59,7 +62,7 @@ static gboolean proxy_property_value(char *property,
 				                     GValue *get_value,
                                      GError **error)
 {
-    /* Call ListNames method, wait for reply */
+    /* Call Get method, wait for reply */
     return dbus_g_proxy_call (properties_proxy, "Get", error,
                               G_TYPE_STRING, "/org/freedesktop/UPower/devices/battery_BAT0",
                               G_TYPE_STRING, property,
@@ -72,11 +75,13 @@ static JSValueRef proxy_double_value(JSContextRef context,
                                      char *property,
                                      size_t argumentCount)
 {
+    /* Calls to UPower to get a double value */
+    
     GError *error = NULL;
     GValue get_value = {0, };
   
     if (argumentCount == 0) {
-        /* Call method, wait for reply */
+        /* Get property value */
         if (!proxy_property_value(property, &get_value, &error))
         {
             g_printerr ("Error: %s\n", error->message);
@@ -84,6 +89,7 @@ static JSValueRef proxy_double_value(JSContextRef context,
             return JSValueMakeUndefined(context);
         }
         
+        /* Convert value to double */
         gdouble value = g_value_get_double(&get_value);
         g_value_unset(&get_value);
         return JSValueMakeNumber(context, value);
@@ -96,11 +102,12 @@ static JSValueRef proxy_uint64_value(JSContextRef context,
                                      char *property,
                                      size_t argumentCount)
 {
+    /* Calls to UPower to get a uint64 value */
     GError *error = NULL;
     GValue get_value = {0, };
   
     if (argumentCount == 0) {
-        /* Call method, wait for reply */
+        /* Get property value */
         if (!proxy_property_value(property, &get_value, &error))
         {
             g_printerr ("Error: %s\n", error->message);
@@ -108,6 +115,7 @@ static JSValueRef proxy_uint64_value(JSContextRef context,
             return JSValueMakeUndefined(context);
         }
         
+        /* Convert value to uint64 */
         guint64 value = g_value_get_uint64(&get_value);
         g_value_unset(&get_value);
         return JSValueMakeNumber(context, value);
@@ -120,6 +128,8 @@ static JSValueRef proxy_boolean_value(JSContextRef context,
                                      char *property,
                                      size_t argumentCount)
 {
+    /* Calls to UPower to get a boolean value */
+    
     GError *error = NULL;
     GValue get_value = {0, };
   
@@ -132,6 +142,7 @@ static JSValueRef proxy_boolean_value(JSContextRef context,
             return JSValueMakeUndefined(context);
         }
         
+        /* Convert value to boolean */
         gboolean value = g_value_get_boolean(&get_value);
         g_value_unset(&get_value);
         return JSValueMakeBoolean(context, value);
@@ -148,6 +159,7 @@ static JSValueRef battery_capacity_cb(JSContextRef context,
                                       const JSValueRef arguments[],
                                       JSValueRef *exception)
 {
+    /* Get battery capacity status */
     return proxy_double_value(context, "Capacity", argumentCount);
 }
 
@@ -159,6 +171,7 @@ static JSValueRef battery_percentage_cb(JSContextRef context,
                                         const JSValueRef arguments[],
                                         JSValueRef *exception)
 {
+    /* Get battery percentage status */
     return proxy_double_value(context, "Percentage", argumentCount);
 }
 
@@ -170,6 +183,7 @@ static JSValueRef battery_voltage_cb(JSContextRef context,
                                      const JSValueRef arguments[],
                                      JSValueRef *exception)
 {
+    /* Get battery voltage status */
     return proxy_double_value(context, "Voltage", argumentCount);
 }
 
@@ -181,6 +195,7 @@ static JSValueRef battery_update_time_cb(JSContextRef context,
                                          const JSValueRef arguments[],
                                          JSValueRef *exception)
 {
+    /* Get battery update time */
     return proxy_uint64_value(context, "UpdateTime", argumentCount);
 }
 
@@ -192,6 +207,7 @@ static JSValueRef battery_power_supply_cb(JSContextRef context,
                                           const JSValueRef arguments[],
                                           JSValueRef *exception)
 {
+    /* Get battery power supply */
     return proxy_boolean_value(context, "PowerSupply", argumentCount);
 }
 
@@ -275,7 +291,7 @@ main (int argc, char* argv[])
     g_signal_connect (G_OBJECT (main_window), "destroy", G_CALLBACK (destroy), NULL);
     
     /* Open webpage */
-    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), "file:///home/ubuntu/archivos/prog/c/webkit/webkit-04.html");
+    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), "file://webkit-04.html");
 
     /* Create the main window */
     gtk_window_set_default_size (GTK_WINDOW (main_window), 800, 600);
