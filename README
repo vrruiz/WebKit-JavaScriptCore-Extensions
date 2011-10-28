@@ -11,5 +11,6 @@ webkit-01.c - A simple GTK+ application which displays a web view.
 webkit-02.c - Extending JavaScript with an dumb class.
 webkit-03.c - Desktop notifications.
 webkit-04.c - DBus access to UPower data.
+webkit-05.c - DBus access to UPower data, with signals (using JS closures).
 
 (C) 2011 Víctor R. Ruiz <rvr@linotipo.es>

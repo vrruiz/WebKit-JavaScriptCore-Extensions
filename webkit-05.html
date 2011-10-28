@@ -1,0 +1,24 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <h1>Extending JavaScript with WebKit. Battery class.</h1>
+  <div id="battery-status"></div>
+  <script type="text/javascript">
+    var display = function () {
+        var div = document.getElementById("battery-status");
+        var battery_status = "Capacity: " + Battery.capacity() + "<br>";
+        battery_status += "Percentage: " + Battery.percentage() + "%<br>";
+        battery_status += "Voltage: " + Battery.voltage() + "<br>";
+        battery_status += "Update Time: " + Battery.updateTime() + "<br>";
+        battery_status += "Power supply: " + Battery.powerSupply() + "<br>";
+        div.innerHTML = battery_status;
+    }
+  
+    battery = new Battery();
+    battery.onChange = display;
+    display();
+  </script>
+</body>
+</html>
